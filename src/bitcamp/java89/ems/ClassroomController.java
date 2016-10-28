@@ -1,47 +1,69 @@
 package bitcamp.java89.ems;
 import java.util.Scanner;
 public class ClassroomController {
-  static Scanner keyScan;
-  static Classroom[] classrooms = new Classroom[100];
-  static Classroom classroom = new Classroom();
-  static int length = 0;
+  private Scanner keyScan;
+  private Classroom[] classrooms = new Classroom[100];
+  private int length = 0;
 
-  static void add() {
-    while (length < classrooms.length) {
+  public ClassroomController(Scanner keyScan) {
+    this.keyScan = keyScan;
+  }
+
+  public void service() {
+    loop : while(true) {
+      System.out.print("강의실관리> ");
+      String order = keyScan.nextLine().toLowerCase();
+      switch (order) {
+        case "add": this.doAdd(); break;
+        case "list": this.doList(); break;
+        case "view": this.doView(); break;
+        case "delete": this.doDelete(); break;
+        case "update": this.doUpdate(); break;
+        case "main":
+          break loop;
+        default :
+          System.out.println("올바른 명령어가 아닙니다. 다시 입력하세요.");
+      }
+    }
+  }
+
+  private void doAdd() {
+    while (this.length < this.classrooms.length) {
+      Classroom classroom = new Classroom();
       System.out.print("강의실명?(예:세미나실) ");
-      classroom.name = keyScan.nextLine();
+      classroom.name = this.keyScan.nextLine();
 
       System.out.print("위치?(예:602호) ");
-      classroom.location = keyScan.nextLine();
+      classroom.location = this.keyScan.nextLine();
 
       System.out.print("면적?(예:100m^2) ");
-      classroom.area = keyScan.nextLine();
+      classroom.area = this.keyScan.nextLine();
 
       System.out.print("이용시간?(예:09:00 ~ 21:00) ");
-      classroom.usabletime = keyScan.nextLine();
+      classroom.usabletime = this.keyScan.nextLine();
 
       System.out.print("수용인원?(예:100) ");
-      classroom.people = Integer.parseInt(keyScan.nextLine());
+      classroom.people = Integer.parseInt(this.keyScan.nextLine());
 
       System.out.print("에어컨(y/n)? ");
       classroom.aconditioner =
-      (keyScan.nextLine().equals("y")) ? true : false;
+      (this.keyScan.nextLine().equals("y")) ? true : false;
 
       System.out.print("프로젝터(y/n)? ");
       classroom.projector =
-      (keyScan.nextLine().equals("y")) ? true : false;
+      (this.keyScan.nextLine().equals("y")) ? true : false;
 
-      classrooms[length++] = classroom;
+      this.classrooms[this.length++] = classroom;
 
       System.out.print("계속 입력하시겠습니까(y/n)? ");
-      if (!keyScan.nextLine().equals("y"))
+      if (!this.keyScan.nextLine().equals("y"))
         break;
     }
   }
 
-  static void list() {
-    for (int i = 0; i < length; i++) {
-      classroom = classrooms[i];
+  private void doList() {
+    for (int i = 0; i < this.length; i++) {
+      Classroom classroom = this.classrooms[i];
       System.out.printf("%s,%s,%s,%s,%d,%s,%s\n",
         classroom.name,
         classroom.location,
@@ -53,22 +75,84 @@ public class ClassroomController {
     }
   }
 
-  static void view() {
+  private void doView() {
     System.out.print("강의실명? ");
-    String name = keyScan.nextLine();
+    String name = this.keyScan.nextLine();
     System.out.println("----------------------------");
-    for (int i = 0; i < length; i++) {
-      if (name.equals(classrooms[i].name)) {
-        classroom = classrooms[i];
-        System.out.printf("강의실명: %s\n", classroom.name);
-        System.out.printf("위치: %s\n", classroom.location);
-        System.out.printf("면적: %s\n", classroom.area);
-        System.out.printf("이용시간: %s\n", classroom.usabletime);
-        System.out.printf("수용인원: %d명\n", classroom.people);
-        System.out.printf("에어컨: %s\n", ((classroom.aconditioner)?"yes":"no"));
-        System.out.printf("프로젝터: %s\n", ((classroom.projector)?"yes":"no"));
+    for (int i = 0; i < this.length; i++) {
+      if (name.equals(this.classrooms[i].name)) {
+        System.out.printf("강의실명: %s\n", this.classrooms[i].name);
+        System.out.printf("위치: %s\n", this.classrooms[i].location);
+        System.out.printf("면적: %s\n", this.classrooms[i].area);
+        System.out.printf("이용시간: %s\n", this.classrooms[i].usabletime);
+        System.out.printf("수용인원: %d명\n", this.classrooms[i].people);
+        System.out.printf("에어컨: %s\n",
+          ((this.classrooms[i].aconditioner)?"yes":"no"));
+        System.out.printf("프로젝터: %s\n",
+          ((this.classrooms[i].projector)?"yes":"no"));
         break;
       }
     }
+  }
+
+  private void doDelete() {
+    Classroom classroom = new Classroom();
+    System.out.print("삭제할 강의실명? ");
+    String name = this.keyScan.nextLine();
+    System.out.println("----------------------------");
+    for (int i = 0; i < this.length; i++) {
+      if (name.equals(this.classrooms[i].name)) {
+        for (int x = i + 1; x < this.length; x++, i++) {
+          this.classrooms[i] = this.classrooms[x];
+        }
+        this.classrooms[--length] = null;
+        System.out.printf("%s 강의실 정보를 삭제하였습니다.\n", name);
+        return;
+      }
+    }
+    System.out.printf("%s 강의실이 없습니다.\n", name);
+  }
+
+  private void doUpdate() {
+    System.out.print("변경할 강의실명? ");
+    String name = this.keyScan.nextLine();
+    for (int i = 0; i < this.length; i++) {
+      if (name.equals(this.classrooms[i].name)) {
+        Classroom update = new Classroom();
+        System.out.print("위치?(예:602호) ");
+        update.location = this.keyScan.nextLine();
+
+        System.out.print("면적?(예:100m^2) ");
+        update.area = this.keyScan.nextLine();
+
+        System.out.print("이용시간?(예:09:00 ~ 21:00) ");
+        update.usabletime = this.keyScan.nextLine();
+
+        System.out.print("수용인원?(예:100) ");
+        update.people = Integer.parseInt(this.keyScan.nextLine());
+
+        System.out.print("에어컨(y/n)? ");
+        update.aconditioner =
+          (this.keyScan.nextLine().equals("y")) ? true : false;
+
+        System.out.print("프로젝터(y/n)? ");
+        update.projector =
+          (this.keyScan.nextLine().equals("y")) ? true : false;
+
+        System.out.print("저장하시겠습니까(y/n)? ");
+
+        update.name = this.classrooms[i].name;
+
+        if (this.keyScan.nextLine().equals("y")) {
+          this.classrooms[i] = update;
+          System.out.println("저장하였습니다.");
+          return;
+        } else {
+          System.out.println("변경을 취소하였습니다.");
+          return;
+        }
+      }
+    }
+    System.out.println(name + "이라는 강의실이 없습니다.");
   }
 }
