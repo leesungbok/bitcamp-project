@@ -1,4 +1,4 @@
-package bitcamp.java89.ems;
+package step09.ex2;
 
 public class Classroom {
   String name, location, area, usabletime;
