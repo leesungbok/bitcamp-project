@@ -1,4 +1,4 @@
-package step09.ex2;
+package step09.ex3;
 
 public class Classroom {
   String name, location, area, usabletime;
