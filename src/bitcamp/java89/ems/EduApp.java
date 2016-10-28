@@ -10,9 +10,11 @@ public class EduApp {
       System.out.print("명령> ");
       String order = keyScan.nextLine().toLowerCase();
       switch (order) {
-        case "add": classroomController.add(); break;
-        case "list": classroomController.list(); break;
-        case "view": classroomController.view(); break;
+        case "add": classroomController.doAdd(); break;
+        case "list": classroomController.doList(); break;
+        case "view": classroomController.doView(); break;
+        case "delete": classroomController.doDelete(); break;
+        case "update": classroomController.doUpdate(); break;
         case "quit":
           System.out.println("Bye");
           break loop;
