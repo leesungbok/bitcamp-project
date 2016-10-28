@@ -1,7 +1,7 @@
 package bitcamp.java89.ems;
 import java.util.Scanner;
-public class Command {
-  static Scanner keyScan = new Scanner(System.in);
+public class ClassroomController {
+  static Scanner keyScan;
   static Classroom[] classrooms = new Classroom[100];
   static Classroom classroom = new Classroom();
   static int length = 0;
