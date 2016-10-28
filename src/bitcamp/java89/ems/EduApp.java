@@ -1,40 +1,24 @@
 package bitcamp.java89.ems;
-
 import java.util.Scanner;
-
 public class EduApp {
-  static Scanner keyScan = new Scanner(System.in);
-
   public static void main(String[] args) {
-    // EduApp에서 사용하는 keyScan을 StudentController와 공유한다.
-    StudentController.keyScan = keyScan;
-
     System.out.println("비트캠프 관리시스템에 오신걸 환영합니다.");
+    Scanner keyScan = new Scanner(System.in);
+    ClassroomController classroomController = new ClassroomController(keyScan);
 
-    loop:
-    while (true) {
+    loop : while(true) {
       System.out.print("명령> ");
-      String command = keyScan.nextLine().toLowerCase();
-
-      switch (command) {
-      case "add": StudentController.doAdd(); break;
-      case "list": StudentController.doList(); break;
-      case "view": StudentController.doView(); break;
-      case "quit":
-        System.out.println("Good bye!");
-        break loop;
-      default:
-        System.out.println("지원하지 않는 명령어입니다.");
+      String order = keyScan.nextLine().toLowerCase();
+      switch (order) {
+        case "add": classroomController.add(); break;
+        case "list": classroomController.list(); break;
+        case "view": classroomController.view(); break;
+        case "quit":
+          System.out.println("Bye");
+          break loop;
+        default :
+          System.out.println("올바른 명령어가 아닙니다. 다시 입력하세요.");
       }
     }
   }
 }
-
-/*
-
-
-
-
-
-
-*/
