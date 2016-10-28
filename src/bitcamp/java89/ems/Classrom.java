@@ -1,13 +1,13 @@
-package step09.ex3;
+package bitcamp.java89.ems;
 
-public class Classroom {
+public class Classrom {
   String name, location, area, usabletime;
   int people;
   boolean aconditioner, projector;
 
-  public Classroom() {}
+  public Classrom() {}
 
-  public Classroom(String name, String location, String usabletime) {
+  public Classrom(String name, String location, String usabletime) {
     this.name = name;
     this.location = location;
     this.usabletime = usabletime;
