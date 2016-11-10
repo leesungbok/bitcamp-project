@@ -12,7 +12,7 @@ public class EduApp {
       switch (order) {
         case "menu": doMenu(); break;
         case "go 1": classroomController.service(); break;
-        case "quit":
+        case "quit": 
           System.out.println("Bye");
           break loop;
         default :
