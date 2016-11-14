@@ -2,12 +2,12 @@ package bitcamp.java89.ems;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.DataInputStream;
 import java.lang.Exception;
-import java.io.File;
 
 public class ClassroomController {
   private Scanner keyScan;
@@ -144,7 +144,6 @@ public class ClassroomController {
   }
 
   private void doUpdate() {
-    count = 1;
     System.out.print("변경할 강의실 인덱스? ");
     int index = Integer.parseInt(this.keyScan.nextLine());
     Classroom oldClassroom = list.get(index);
@@ -182,6 +181,7 @@ public class ClassroomController {
     if (this.keyScan.nextLine().toLowerCase().equals("y")) {
       list.set(index, update);
       System.out.println("저장하였습니다.");
+      count = 1;
     } else {
       System.out.println("변경을 취소하였습니다.");
     }
@@ -211,12 +211,20 @@ public class ClassroomController {
     } else {
       System.out.println("학생 정보가 변경되었습니다.");
       System.out.print("그래도 종료하시겠습니까?(y/n) ");
-      if (keyScan.nextLine().toLowerCase().equals("y")) {
-        System.out.println("학생 정보가 변경된 것을 취소하고 종료합니다.");
-        System.out.println("Good bye!");
-        return true;
-      } else {
-        return false;
+      while(true) {
+        String exit = keyScan.nextLine().toLowerCase();
+        switch (exit) {
+          case "y":
+            System.out.println("학생 정보가 변경된 것을 취소하고 종료합니다.");
+            System.out.println("Good bye!");
+            return true;
+          case "n":
+            return false;
+          default:
+            System.out.println("올바른 명령어가 아닙니다. 다시 입력하세요.");
+            System.out.print("그래도 종료하시겠습니까?(y/n) ");
+            break;
+        }
       }
     }
   }
