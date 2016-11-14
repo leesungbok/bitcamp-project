@@ -1,13 +1,41 @@
 package bitcamp.java89.ems;
+
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.DataInputStream;
+import java.lang.Exception;
+import java.io.File;
 
 public class ClassroomController {
   private Scanner keyScan;
   private ArrayList<Classroom> list;
+  private FileOutputStream out = null;
+  private DataOutputStream out2 = null;
+  private FileInputStream in = null;
+  private DataInputStream in2 = null;
+  private int count;
 
-  public ClassroomController(Scanner keyScan) {
+  public ClassroomController(Scanner keyScan) throws Exception {
     list = new ArrayList<Classroom>();
+    File file = new File("lib/");
+    File[] files = file.listFiles();
+    for (File name : files) {
+      Classroom classroom = new Classroom();
+      in = new FileInputStream(name.getPath());
+      in2 = new DataInputStream(in);
+      classroom.name = in2.readUTF();
+      classroom.location = in2.readUTF();
+      classroom.area = in2.readUTF();
+      classroom.usabletime = in2.readUTF();
+      classroom.people = in2.readInt();
+      classroom.aconditioner = in2.readBoolean();
+      classroom.projector = in2.readBoolean();
+      list.add(classroom);
+      in2.close();
+    }
     this.keyScan = keyScan;
   }
 
@@ -34,20 +62,25 @@ public class ClassroomController {
     } // while
   }
 
-  private void doAdd() {
+  private void doAdd() throws Exception {
     while (true) {
+      count = 1;
       Classroom classroom = new Classroom();
       System.out.print("강의실명?(예:세미나실) ");
       classroom.name = this.keyScan.nextLine();
+      
 
       System.out.print("위치?(예:602호) ");
       classroom.location = this.keyScan.nextLine();
+      
 
       System.out.print("면적?(예:100m^2) ");
       classroom.area = this.keyScan.nextLine();
+      
 
       System.out.print("이용시간?(예:09:00 ~ 21:00) ");
       classroom.usabletime = this.keyScan.nextLine();
+     
 
       while(true) {
         try {
@@ -62,11 +95,11 @@ public class ClassroomController {
       System.out.print("에어컨(y/n)? ");
       classroom.aconditioner =
       (this.keyScan.nextLine().equals("y")) ? true : false;
+      
 
       System.out.print("프로젝터(y/n)? ");
       classroom.projector =
       (this.keyScan.nextLine().equals("y")) ? true : false;
-
       list.add(classroom);
 
       System.out.print("계속 입력하시겠습니까(y/n)? ");
@@ -111,6 +144,7 @@ public class ClassroomController {
   }
 
   private void doUpdate() {
+    count = 1;
     System.out.print("변경할 강의실 인덱스? ");
     int index = Integer.parseInt(this.keyScan.nextLine());
     Classroom oldClassroom = list.get(index);
@@ -150,6 +184,40 @@ public class ClassroomController {
       System.out.println("저장하였습니다.");
     } else {
       System.out.println("변경을 취소하였습니다.");
+    }
+  }
+
+  public void doSave() throws Exception {
+    for (Classroom classroom : list) {
+      out = new FileOutputStream("lib/" + classroom.name + ".data");
+      out2 = new DataOutputStream(out);
+      out2.writeUTF(classroom.name);
+      out2.writeUTF(classroom.location);
+      out2.writeUTF(classroom.area);
+      out2.writeUTF(classroom.usabletime);
+      out2.writeInt(classroom.people);
+      out2.writeBoolean(classroom.aconditioner);
+      out2.writeBoolean(classroom.projector);
+      out2.close();
+    }
+    System.out.println("저장하였습니다.");
+    count = 0;
+  }
+
+  public boolean doQuit() throws Exception {
+    if (count != 1) {
+      System.out.println("Good bye!");
+      return true;
+    } else {
+      System.out.println("학생 정보가 변경되었습니다.");
+      System.out.print("그래도 종료하시겠습니까?(y/n) ");
+      if (keyScan.nextLine().toLowerCase().equals("y")) {
+        System.out.println("학생 정보가 변경된 것을 취소하고 종료합니다.");
+        System.out.println("Good bye!");
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }
