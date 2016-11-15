@@ -2,7 +2,7 @@ bin/
 lib/
 .gradle/
 .settings/
-.classpath
-.project
-.gradle
-.data
+*.classpath
+*.project
+*.gradle
+*.data
