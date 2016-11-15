@@ -1,42 +1,48 @@
 package bitcamp.java89.ems;
 
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.FileInputStream;
-import java.io.DataInputStream;
-import java.lang.Exception;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ClassroomController {
   private Scanner keyScan;
   private ArrayList<Classroom> list;
-  private FileOutputStream out = null;
-  private DataOutputStream out2 = null;
-  private FileInputStream in = null;
-  private DataInputStream in2 = null;
-  private int count;
+  private boolean changed;
+  private String filename = "classroom2.data";
 
   public ClassroomController(Scanner keyScan) throws Exception {
     list = new ArrayList<Classroom>();
-    File file = new File("lib/");
-    File[] files = file.listFiles();
-    for (File name : files) {
-      Classroom classroom = new Classroom();
-      in = new FileInputStream(name.getPath());
-      in2 = new DataInputStream(in);
-      classroom.name = in2.readUTF();
-      classroom.location = in2.readUTF();
-      classroom.area = in2.readUTF();
-      classroom.usabletime = in2.readUTF();
-      classroom.people = in2.readInt();
-      classroom.aconditioner = in2.readBoolean();
-      classroom.projector = in2.readBoolean();
-      list.add(classroom);
-      in2.close();
-    }
     this.keyScan = keyScan;
+    this.load();  // 기존의 데이터 파일을 읽어서 ArrayList에 학생정보를 로딩한다.
+  }
+
+  public boolean isChanged() {
+    return changed;
+  }
+
+  @SuppressWarnings("unchecked")
+  private void load() {
+    FileInputStream in0 = null;
+    ObjectInputStream in = null;
+    try {
+      in0 = new FileInputStream(this.filename);
+      in = new ObjectInputStream(in0);
+      list = (ArrayList<Classroom>)in.readObject();
+    } catch (EOFException e) {
+    } catch (Exception e) {
+      System.out.println("학생 데이터 로딩 중 오류 발생!");
+    } finally {
+      try {
+        in.close();
+        in0.close();
+      } catch (Exception e) {
+        //close하다가 예외 발생하면 무시한다.
+      }
+    }
   }
 
   public void service() {
@@ -64,7 +70,6 @@ public class ClassroomController {
 
   private void doAdd() throws Exception {
     while (true) {
-      count = 1;
       Classroom classroom = new Classroom();
       System.out.print("강의실명?(예:세미나실) ");
       classroom.name = this.keyScan.nextLine();
@@ -101,7 +106,7 @@ public class ClassroomController {
       classroom.projector =
       (this.keyScan.nextLine().equals("y")) ? true : false;
       list.add(classroom);
-
+      changed = true;
       System.out.print("계속 입력하시겠습니까(y/n)? ");
       if (!this.keyScan.nextLine().equals("y"))
         break;
@@ -137,10 +142,10 @@ public class ClassroomController {
   }
 
   private void doDelete() {
-    Classroom classroom = new Classroom();
     System.out.print("삭제할 강의실 인덱스? ");
     int index = Integer.parseInt(keyScan.nextLine());
     list.remove(index);
+    changed = true;
   }
 
   private void doUpdate() {
@@ -181,51 +186,18 @@ public class ClassroomController {
     if (this.keyScan.nextLine().toLowerCase().equals("y")) {
       list.set(index, update);
       System.out.println("저장하였습니다.");
-      count = 1;
+      changed = true;
     } else {
       System.out.println("변경을 취소하였습니다.");
     }
   }
 
-  public void doSave() throws Exception {
-    for (Classroom classroom : list) {
-      out = new FileOutputStream("lib/" + classroom.name + ".data");
-      out2 = new DataOutputStream(out);
-      out2.writeUTF(classroom.name);
-      out2.writeUTF(classroom.location);
-      out2.writeUTF(classroom.area);
-      out2.writeUTF(classroom.usabletime);
-      out2.writeInt(classroom.people);
-      out2.writeBoolean(classroom.aconditioner);
-      out2.writeBoolean(classroom.projector);
-      out2.close();
-    }
+  public void save() throws Exception {
+    FileOutputStream out = new FileOutputStream(this.filename);
+    ObjectOutputStream out2 = new ObjectOutputStream(out);
+    out2.writeObject(list);
+    out2.close();
+    changed = false;
     System.out.println("저장하였습니다.");
-    count = 0;
-  }
-
-  public boolean doQuit() throws Exception {
-    if (count != 1) {
-      System.out.println("Good bye!");
-      return true;
-    } else {
-      System.out.println("학생 정보가 변경되었습니다.");
-      System.out.print("그래도 종료하시겠습니까?(y/n) ");
-      while(true) {
-        String exit = keyScan.nextLine().toLowerCase();
-        switch (exit) {
-          case "y":
-            System.out.println("학생 정보가 변경된 것을 취소하고 종료합니다.");
-            System.out.println("Good bye!");
-            return true;
-          case "n":
-            return false;
-          default:
-            System.out.println("올바른 명령어가 아닙니다. 다시 입력하세요.");
-            System.out.print("그래도 종료하시겠습니까?(y/n) ");
-            break;
-        }
-      }
-    }
   }
 }
