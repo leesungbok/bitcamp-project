@@ -5,16 +5,20 @@ import java.util.Scanner;
 public class EduApp {
     static Scanner keyScan = new Scanner(System.in);
     static ClassroomController classroomController;
+    static ContactController contactController;
 
   public static void main(String[] args) throws Exception {
     System.out.println("비트캠프 관리시스템에 오신걸 환영합니다.");
     classroomController = new ClassroomController(keyScan);
+    contactController = new ContactController(keyScan);
+    
     loop : while(true) {
       System.out.print("명령> ");
       String order = keyScan.nextLine().toLowerCase();
       switch (order) {
         case "menu": doMenu(); break;
         case "go 1": classroomController.service(); break;
+        case "go 5": contactController.service(); break;
         case "save": doSave(); break;
         case "quit": 
           if (doQuit())
@@ -29,6 +33,10 @@ public class EduApp {
   static void doMenu() {
     System.out.println("[메뉴]");
     System.out.println("1. 강의실 관리");
+    System.out.println("5. 연락처 관리");
+    System.out.println("[명령]");
+    System.out.println("save   데이터 저장");
+    System.out.println("quit   프로그램 종료");
     System.out.println("메뉴 이동은 'go 메뉴번호'를 입력하세요");
   }
 
