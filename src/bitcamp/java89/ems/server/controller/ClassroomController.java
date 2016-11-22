@@ -40,7 +40,7 @@ public class ClassroomController {
       list = (ArrayList<Classroom>)in.readObject();
     } catch (EOFException e) {
     } catch (Exception e) {
-      System.out.println("강의실 데이터 로딩 중 오류 발생!");
+      out.println("강의실 데이터 로딩 중 오류 발생!");
     } finally {
       try {
         in.close();
@@ -49,8 +49,8 @@ public class ClassroomController {
     }
   }
 
-  public void service() {
-    loop : while(true) {
+  public boolean service() {
+    while(true) {
       out.println("강의실관리> ");
       out.println();
       String[] commands = in.nextLine().split("\\?");
@@ -61,7 +61,8 @@ public class ClassroomController {
         case "view": this.doView(commands[1]); break;
         case "delete": this.doDelete(commands[1]); break;
         case "update": this.doUpdate(commands[1]); break;
-        case "main": break loop;
+        case "main": return true;
+        case "quit": return false;
         default: 
           out.println("올바른 명령어가 아닙니다. 다시 입력하세요.");
         }

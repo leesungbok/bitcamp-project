@@ -50,8 +50,8 @@ public class ContactController {
     }
   }
 
-  public void service() {
-    loop : while(true) {
+  public boolean service() {
+    while(true) {
       // 클라이언트로 데이터 출력
       out.println("연락처관리> ");
       out.println(); // 보내는 데이터의 끝을 의미
@@ -65,7 +65,8 @@ public class ContactController {
         case "view": this.doView(commands[1]); break;
         case "delete": this.doDelete(commands[1]); break;
         case "update": this.doUpdate(commands[1]); break;
-        case "main": break loop;
+        case "main": return true;
+        case "quit": return false;
         default: 
           out.println("올바른 명령어가 아닙니다. 다시 입력하세요.");
         }
