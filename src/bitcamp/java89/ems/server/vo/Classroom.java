@@ -1,20 +1,26 @@
-package bitcamp.java89.ems;
+package bitcamp.java89.ems.server.vo;
 
 import java.io.Serializable;
 
 public class Classroom implements Serializable {
   private static final long serialVersionUID = 1L;
   
-  protected String name, location, area, usabletime;
-  protected int people;
-  protected boolean aconditioner, projector;
+  private String name;
+
+  private String location;
+
+  private String area;
+
+  private String time;
+  private int people;
+  private boolean aircon, projector;
 
   public Classroom() {}
 
-  public Classroom(String name, String location, String usabletime) {
+  public Classroom(String name, String location, String time) {
     this.name = name;
     this.location = location;
-    this.usabletime = usabletime;
+    this.time = time;
   }
 
   public String getName() {
@@ -41,12 +47,12 @@ public class Classroom implements Serializable {
     this.area = area;
   }
 
-  public String getUsabletime() {
-    return usabletime;
+  public String getTime() {
+    return time;
   }
 
-  public void setUsabletime(String usabletime) {
-    this.usabletime = usabletime;
+  public void setTime(String time) {
+    this.time = time;
   }
 
   public int getPeople() {
@@ -57,12 +63,12 @@ public class Classroom implements Serializable {
     this.people = people;
   }
 
-  public boolean isAconditioner() {
-    return aconditioner;
+  public boolean isAircon() {
+    return aircon;
   }
 
-  public void setAconditioner(boolean aconditioner) {
-    this.aconditioner = aconditioner;
+  public void setAircon(boolean aircon) {
+    this.aircon = aircon;
   }
 
   public boolean isProjector() {
@@ -75,7 +81,7 @@ public class Classroom implements Serializable {
 
   @Override
   public String toString() {
-    return "Classroom [name=" + name + ", location=" + location + ", area=" + area + ", usabletime=" + usabletime
-        + ", people=" + people + ", aconditioner=" + aconditioner + ", projector=" + projector + "]";
+    return "Classroom [name=" + name + ", location=" + location + ", area=" + area + ", time=" + time
+        + ", people=" + people + ", aircon=" + aircon + ", projector=" + projector + "]";
   }
 }
