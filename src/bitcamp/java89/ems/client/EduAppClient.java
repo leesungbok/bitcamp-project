@@ -42,3 +42,18 @@ public class EduAppClient {
     }
   }
 }
+
+/* contact/add?name=홍길동&position=대리&tel=111-1111&email=hong@test.com
+ * contact/list
+ * contact/view?name=홍길동
+ * contact/delete?email=hong@test.com
+ * contact/update?name=홍길동&position=대리&tel=111-1111&email=hong@test.com
+ * 
+ * classroom/add?name=자바강의실&location=302호&area=100m^2&time=08:00~22:00&people=30&aircon=true&projector=true
+ * classroom/list
+ * classroom/view?name=자바강의실
+ * classroom/delete?name=자바강의실
+ * classroom/update?name=자바강의실&location=301호&area=200m^2&time=09:00~21:00&people=400&aircon=false&projector=false
+ */
+
+
