@@ -3,19 +3,18 @@ package bitcamp.java89.ems.server.controller;
 import java.io.PrintStream;
 import java.util.HashMap;
 
-import bitcamp.java89.ems.server.Command;
+import bitcamp.java89.ems.server.AbstractCommand;
 import bitcamp.java89.ems.server.dao.ClassroomDao;
 import bitcamp.java89.ems.server.vo.Classroom;
 
-public class ClassroomAddController implements Command {
-  private ClassroomDao classRoomDao;
-
-  public ClassroomAddController() {
-    classRoomDao = ClassroomDao.getInstance();
+public class ClassroomAddController extends AbstractCommand {
+  ClassroomDao classroomDao;
+  public void setClassroomDao(ClassroomDao classroomDao) {
+    this.classroomDao = classroomDao;
   }
-  
-  public void service(HashMap<String,String> paramMap, PrintStream out) {
-    if (classRoomDao.existName(paramMap.get("name"))) {
+  @Override
+  protected void doResponse(HashMap<String,String> paramMap, PrintStream out) throws Exception {    
+    if (classroomDao.existName(paramMap.get("name"))) {
       out.println("같은 강의실이 존재합니다. 등록을 취소합니다.");
       return ;
     }
@@ -31,7 +30,11 @@ public class ClassroomAddController implements Command {
     classroom.setProjector(
         (paramMap.get("projector").toLowerCase().equals("true")) ? true : false);
     
-    classRoomDao.insert(classroom);
+    classroomDao.insert(classroom);
     out.println("등록하였습니다.");
+  }
+  @Override
+  public String getCommandString() {
+    return "classroom/add";
   }
 }

@@ -4,19 +4,18 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import bitcamp.java89.ems.server.Command;
+import bitcamp.java89.ems.server.AbstractCommand;
 import bitcamp.java89.ems.server.dao.ClassroomDao;
 import bitcamp.java89.ems.server.vo.Classroom;
 
-public class ClassroomListController implements Command {
-  private ClassroomDao classRoomDao;
-
-  public ClassroomListController() {
-    classRoomDao = ClassroomDao.getInstance();
+public class ClassroomListController extends AbstractCommand {
+  ClassroomDao classroomDao;
+  public void setClassroomDao(ClassroomDao classroomDao) {
+    this.classroomDao = classroomDao;
   }
-  
-  public void service(HashMap<String,String> paramMap, PrintStream out) {
-    ArrayList<Classroom> list = classRoomDao.getList();
+  @Override
+  protected void doResponse(HashMap<String,String> paramMap, PrintStream out) throws Exception {
+    ArrayList<Classroom> list = classroomDao.getList();
     if (list.size() == 0) {
       out.println("강의실 데이터가 없습니다.");
       return;
@@ -31,5 +30,9 @@ public class ClassroomListController implements Command {
         ((classroom.isAircon())?"yes":"no"),
         ((classroom.isProjector())?"yes":"no"));
     }
+  }
+  @Override
+  public String getCommandString() {
+    return "classroom/list";
   }
 }

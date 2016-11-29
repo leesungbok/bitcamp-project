@@ -3,23 +3,27 @@ package bitcamp.java89.ems.server.controller;
 import java.io.PrintStream;
 import java.util.HashMap;
 
-import bitcamp.java89.ems.server.Command;
+import bitcamp.java89.ems.server.AbstractCommand;
 import bitcamp.java89.ems.server.dao.ClassroomDao;
 
-public class ClassroomDeleteController implements Command {
-  private ClassroomDao classRoomDao;
-
-  public ClassroomDeleteController() {
-    classRoomDao = ClassroomDao.getInstance();
+public class ClassroomDeleteController extends AbstractCommand {
+  ClassroomDao classroomDao;
+  public void setClassroomDao(ClassroomDao classroomDao) {
+    this.classroomDao = classroomDao;
   }
-  
-  public void service(HashMap<String,String> paramMap, PrintStream out) {
-    if (!classRoomDao.existName(paramMap.get("name"))) {
+  @Override
+  protected void doResponse(HashMap<String,String> paramMap, PrintStream out) throws Exception {
+    if (!classroomDao.existName(paramMap.get("name"))) {
       out.println("해당 강의실을 찾지 못했습니다.");
       return;
     }
-    
-    classRoomDao.delete(paramMap.get("name"));
+
+    classroomDao.delete(paramMap.get("name"));
     out.println("삭제하였습니다.");
+  }
+
+  @Override
+  public String getCommandString() {
+    return "classroom/delete";
   }
 }
