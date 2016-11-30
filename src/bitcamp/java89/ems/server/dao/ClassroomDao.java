@@ -2,8 +2,10 @@ package bitcamp.java89.ems.server.dao;
 
 import java.util.ArrayList;
 
+import bitcamp.java89.ems.server.annotation.Component;
 import bitcamp.java89.ems.server.vo.Classroom;
 
+@Component
 public class ClassroomDao extends AbstractDao<Classroom> {
   static ClassroomDao obj;
 

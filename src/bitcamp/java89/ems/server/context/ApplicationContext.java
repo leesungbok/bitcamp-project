@@ -5,6 +5,7 @@
  */
 package bitcamp.java89.ems.server.context;
 
+import bitcamp.java89.ems.server.annotation.Component;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -16,25 +17,36 @@ import java.util.HashMap;
 
 public class ApplicationContext {
   HashMap<String,Object> objPool = new HashMap<>();
-  
+
+  /* 파라미터로 넘어오는 값
+   * "bitcamp.java89.ems.server.controller"
+   * "bitcamp.java89.ems.server.dao"
+   */
+
   public ApplicationContext(String[] packages) {
     ArrayList<Class<?>> classList = getClassList(packages);
-    prepareObjects(classList);
+    // bitcamp.java89.ems.server.controller 패키지 내있는 클래스 정보를 다룰 도구들을 classList에 저장
+    prepareObjects(classList); // 
     injectDependencies();
   }
-  
+
   public Object getBean(String name) {
     return objPool.get(name);
+  }
+  
+  // 이 보관소에 저장된 모든 객체를 리턴한다.
+  public Collection<Object> getAllBeans() {
+    return objPool.values();
   }
 
   private void injectDependencies() {
     // HashMap에 저장된 객체 목록을 뽑아 온다.
     Collection<Object> objects = objPool.values();
-    
+
     for (Object obj : objects) {
       // 각 객체의 public 메서드 목록을 뽑는다.
       Method[] methods = obj.getClass().getMethods();
-      
+
       for (Method m : methods) {
         if (!m.getName().startsWith("set")) { // 셋터가 아니면 제외시킨다.
           continue;
@@ -87,15 +99,14 @@ public class ApplicationContext {
     for (Class<?> clazz : classList) {
       try {
         Object obj = clazz.newInstance();
-        String key = null;
-        try {
-          Method m = clazz.getMethod("getCommandString");
-          key = (String)m.invoke(obj);
-        } catch (Exception e) {
-          key = clazz.getName();
-        }
-        objPool.put(key, obj);
         
+        Component compAnno = clazz.getAnnotation(Component.class);
+        
+        if (compAnno.value().length() == 0) {
+          objPool.put(clazz.getName(), obj);
+        } else {
+          objPool.put(compAnno.value(), obj);
+        }
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -134,7 +145,7 @@ public class ApplicationContext {
       } else {
         try {
           Class<?> c = loadClass(file);
-          if (!isAbstract(c)) {
+          if (!isAbstract(c) && inComponent(c)) {
             classList.add(c); 
           }
         } catch (Exception e) {
@@ -142,6 +153,10 @@ public class ApplicationContext {
         }
       }
     }
+  }
+
+  private boolean inComponent(Class<?> c) {
+    return c.getAnnotation(Component.class) != null;
   }
 
   private Class<?> loadClass(File file) throws IOException, ClassNotFoundException {
@@ -158,14 +173,15 @@ public class ApplicationContext {
     return false;
   }
   
-  /*
+/*
   public static void main(String[] args) throws Exception {
     ApplicationContext appContext = new ApplicationContext(new String[]{
         "bitcamp.java89.ems.server.controller", 
         "bitcamp.java89.ems.server.dao"});
     
   }
-  */
+*/
+  
 }
 
 
